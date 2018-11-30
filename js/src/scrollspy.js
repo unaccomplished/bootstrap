@@ -14,37 +14,44 @@ import Util from './util'
  * ------------------------------------------------------------------------
  */
 
+// Setting constants for Scrollspy
 const NAME               = 'scrollspy'
 const VERSION            = '4.1.3'
+// why is DATA_KEY set to bs.scrollspy?
 const DATA_KEY           = 'bs.scrollspy'
 const EVENT_KEY          = `.${DATA_KEY}`
 const DATA_API_KEY       = '.data-api'
 const JQUERY_NO_CONFLICT = $.fn[NAME]
 
+// set default constants for offset, method, and target
 const Default = {
   offset : 10,
   method : 'auto',
   target : ''
 }
 
+// set default types for offset, method, and target
 const DefaultType = {
   offset : 'number',
   method : 'string',
   target : '(string|element)'
 }
 
+// set events for on() method
 const Event = {
   ACTIVATE      : `activate${EVENT_KEY}`,
   SCROLL        : `scroll${EVENT_KEY}`,
   LOAD_DATA_API : `load${EVENT_KEY}${DATA_API_KEY}`
 }
 
+// set class names
 const ClassName = {
   DROPDOWN_ITEM : 'dropdown-item',
   DROPDOWN_MENU : 'dropdown-menu',
   ACTIVE        : 'active'
 }
 
+// set selectors
 const Selector = {
   DATA_SPY        : '[data-spy="scroll"]',
   ACTIVE          : '.active',
@@ -57,6 +64,7 @@ const Selector = {
   DROPDOWN_TOGGLE : '.dropdown-toggle'
 }
 
+// set offset method for offset and position
 const OffsetMethod = {
   OFFSET   : 'offset',
   POSITION : 'position'
@@ -68,9 +76,11 @@ const OffsetMethod = {
  * ------------------------------------------------------------------------
  */
 
+// define object constructor method for Scrollspy class
 class ScrollSpy {
   constructor(element, config) {
     this._element       = element
+    // if element.tagName is equal to BODY, return window, otherwise return element
     this._scrollElement = element.tagName === 'BODY' ? window : element
     this._config        = this._getConfig(config)
     this._selector      = `${this._config.target} ${Selector.NAV_LINKS},` +
@@ -89,6 +99,8 @@ class ScrollSpy {
 
   // Getters
 
+// set getters for public static field with VERSION and Default keywords, these
+// return VERSION and Default respectively
   static get VERSION() {
     return VERSION
   }
@@ -99,23 +111,36 @@ class ScrollSpy {
 
   // Public
 
+// set refresh public method
   refresh() {
+    // if scrollElement is equal to scrollElement.window, then return OFFSET,
+    // otherwise, return POSITION.  --> What are OFFSET and POSITION in reference to?
     const autoMethod = this._scrollElement === this._scrollElement.window
       ? OffsetMethod.OFFSET : OffsetMethod.POSITION
 
+    // if config.method is equal to auto, return autoMethod, otherwise return
+    // config.method. --> What is this._config.method referring to?
     const offsetMethod = this._config.method === 'auto'
       ? autoMethod : this._config.method
 
+    // if offsetMethod is equal to POSITION, return vertical position, otherwise
+    // return 0
     const offsetBase = offsetMethod === OffsetMethod.POSITION
       ? this._getScrollTop() : 0
 
+// set _offsets and _targets as empty arrays
     this._offsets = []
     this._targets = []
 
+// set scrollHeight to scrollHeight or minimum height element would require to fit
+// in viewport without using a vertical scrollbar
     this._scrollHeight = this._getScrollHeight()
 
+// create an array called targets that includes all of the nav links, list items,
+// and dropdown items
     const targets = [].slice.call(document.querySelectorAll(this._selector))
 
+// map, filter, sort, and forEach? targets array --> Not exactly sure what this is doing?
     targets
       .map((element) => {
         let target
@@ -145,6 +170,7 @@ class ScrollSpy {
       })
   }
 
+// define dispose method, clear relevant information that is no longer needed
   dispose() {
     $.removeData(this._element, DATA_KEY)
     $(this._scrollElement).off(EVENT_KEY)
@@ -161,8 +187,10 @@ class ScrollSpy {
 
   // Private
 
+// get Config details, is this to help define the type of the config in case it's not clearly defined?
   _getConfig(config) {
     config = {
+      // What does the ... mean?
       ...Default,
       ...typeof config === 'object' && config ? config : {}
     }
@@ -181,11 +209,13 @@ class ScrollSpy {
     return config
   }
 
+// return ScrollTop or vertical scrollbar position
   _getScrollTop() {
     return this._scrollElement === window
       ? this._scrollElement.pageYOffset : this._scrollElement.scrollTop
   }
 
+// return entire height of the element
   _getScrollHeight() {
     return this._scrollElement.scrollHeight || Math.max(
       document.body.scrollHeight,
@@ -193,11 +223,14 @@ class ScrollSpy {
     )
   }
 
+// return height of the browser window's viewport
   _getOffsetHeight() {
     return this._scrollElement === window
       ? window.innerHeight : this._scrollElement.getBoundingClientRect().height
   }
 
+// set height values so that it refreshes and resets values when needed to maintain
+// proper target values?
   _process() {
     const scrollTop    = this._getScrollTop() + this._config.offset
     const scrollHeight = this._getScrollHeight()
@@ -237,6 +270,8 @@ class ScrollSpy {
     }
   }
 
+// set target as active target, is this to highlight the right nav/list item as
+// user is scrolling through?
   _activate(target) {
     this._activeTarget = target
 
@@ -269,6 +304,7 @@ class ScrollSpy {
     })
   }
 
+// define clear method, clear the active selector and remove class name
   _clear() {
     const nodes = [].slice.call(document.querySelectorAll(this._selector))
     $(nodes).filter(Selector.ACTIVE).removeClass(ClassName.ACTIVE)
@@ -276,16 +312,19 @@ class ScrollSpy {
 
   // Static
 
+// not quite sure what this is doing?
   static _jQueryInterface(config) {
     return this.each(function () {
       let data = $(this).data(DATA_KEY)
       const _config = typeof config === 'object' && config
 
+// if no data, define new data
       if (!data) {
         data = new ScrollSpy(this, _config)
         $(this).data(DATA_KEY, data)
       }
 
+// define error if config type is a string and value is undefined
       if (typeof config === 'string') {
         if (typeof data[config] === 'undefined') {
           throw new TypeError(`No method named "${config}"`)
@@ -302,6 +341,7 @@ class ScrollSpy {
  * ------------------------------------------------------------------------
  */
 
+// API implementation, how does this work?
 $(window).on(Event.LOAD_DATA_API, () => {
   const scrollSpys = [].slice.call(document.querySelectorAll(Selector.DATA_SPY))
 
@@ -318,6 +358,7 @@ $(window).on(Event.LOAD_DATA_API, () => {
  * ------------------------------------------------------------------------
  */
 
+// what does this do?
 $.fn[NAME] = ScrollSpy._jQueryInterface
 $.fn[NAME].Constructor = ScrollSpy
 $.fn[NAME].noConflict = () => {

@@ -306,6 +306,13 @@ Options can be passed via data attributes or JavaScript. For data attributes, ap
       <td>10</td>
       <td>Pixels to offset from top when calculating position of scroll.</td>
     </tr>
+    <tr>
+      <td>method</td>
+      <td>string</td>
+      <td>auto</td>
+      <td>what it does</td>
+    </tr>
+    <!-- Is this the best place to add in information about `method` property values? -->
   </tbody>
 </table>
 
